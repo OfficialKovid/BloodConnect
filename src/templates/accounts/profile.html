@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - BloodConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .profile-header {
+        position: relative;
+        padding-top: 200px;
+        text-align: center;
+    }
+
+    .profile-cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 200px;
+        background: linear-gradient(135deg, #d62828, #f77f00);
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 5px solid white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .avatar-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #d62828;
+    }
+
+    .profile-info {
+        margin-top: 1rem;
+    }
+
+    .blood-type {
+        font-weight: bold;
+        color: #d62828;
+    }
+
+    .profile-content {
+        padding: 2rem;
+    }
+
+    .profile-section {
+        margin-bottom: 2rem;
+    }
+
+    .profile-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .profile-section h2 i {
+        margin-right: 0.5rem;
+        color: #d62828;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-item {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .info-item label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Remove donation-related styles */
+    .donation-list,
+    .donation-item,
+    .donation-status,
+    .donation-status.completed,
+    .donation-status.pending,
+    .donation-status.cancelled {
+        display: none;
+    }
+
+    .profile-actions {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn {
+        background: #dc3545;
+    }
+
+    .logout-btn:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    .logout-btn:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-cover"></div>
+        <div class="profile-avatar">
+            <div class="avatar-wrapper">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+        <div class="profile-info">
+            <h1>{{ user.get_full_name }}</h1>
+            <p class="blood-type">{{ user.blood_type }}</p>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-section personal-info">
+            <h2><i class="fas fa-user-circle"></i> Personal Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Email</label>
+                    <p>{{ user.email }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Primary Phone</label>
+                    <p>{{ user.phone_primary }}</p>
+                </div>
+                <div class="info-item">
+                    <label>Secondary Phone</label>
+                    <p>{{ user.phone_secondary|default:"Not provided" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section location-info">
+            <h2><i class="fas fa-map-marker-alt"></i> Location Details</h2>
+            <div class="info-grid">
+                <div class="info-item full-width">
+                    <label>Address</label>
+                    <p>{{ user.address }}</p>
+                </div>
+                <div class="info-item">
+                    <label>City</label>
+                    <p>{{ user.city }}</p>
+                </div>
+                <div class="info-item">
+                    <label>State</label>
+                    <p>{{ user.state }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'accounts:logout' %}" class="btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

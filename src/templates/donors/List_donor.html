@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Available Donors{% endblock %}
+
+{% block extra_css %}
+<style>
+    .donor-list-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+
+    .filters {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .donor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .donor-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .donor-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .blood-type {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #c2185b;
+        margin-bottom: 1rem;
+    }
+
+    .donor-info p {
+        margin: 0.5rem 0;
+        color: #4b5563;
+    }
+
+    .donor-contact {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .filter-btn {
+        background: #c2185b;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        background: #a01449;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="donor-list-container">
+    <div class="filters">
+        <h2>Filter Donors</h2>
+        <form method="GET" class="filter-grid">
+            <div>
+                <label>Blood Group</label>
+                <select name="blood_group" class="form-control">
+                    <option value="">All Blood Groups</option>
+                    <option value="A+" {% if request.GET.blood_group == "A+" %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if request.GET.blood_group == "A-" %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if request.GET.blood_group == "B+" %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if request.GET.blood_group == "B-" %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if request.GET.blood_group == "AB+" %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if request.GET.blood_group == "AB-" %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if request.GET.blood_group == "O+" %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if request.GET.blood_group == "O-" %}selected{% endif %}>O-</option>
+                </select>
+            </div>
+            <div>
+                <label>State</label>
+                <select name="state" id="state" onchange="this.form.submit()">
+                    <option value="">All States</option>
+                    {% for state_name in states %}
+                    <option value="{{ state_name }}" {% if selected_state == state_name %}selected{% endif %}>
+                        {{ state_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>City</label>
+                <select name="city" id="city">
+                    <option value="">All Cities</option>
+                    {% for city_name in cities %}
+                    <option value="{{ city_name }}" {% if selected_city == city_name %}selected{% endif %}>
+                        {{ city_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <button type="submit" class="filter-btn">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="donor-grid">
+        {% if donors %}
+            {% for donor in donors %}
+            <div class="donor-card">
+                <div class="blood-type">{{ donor.blood_type }}</div>
+                <div class="donor-info">
+                    <p><strong>Name:</strong> {{ donor.first_name }} {{ donor.last_name }}</p>
+                    <p><strong>Location:</strong> {{ donor.city }}, {{ donor.state }}</p>
+                </div>
+                <div class="donor-contact">
+                    <p><strong>Contact:</strong> {{ donor.phone_primary }}</p>
+                    {% if donor.phone_secondary %}
+                    <p><strong>Alternative:</strong> {{ donor.phone_secondary }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <h3>No donors found matching your criteria</h3>
+                <p>Try adjusting your filters or check back later</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+const citiesByState = {{ states_cities_json|safe }};
+
+function loadCities() {
+    const stateSelect = document.getElementById('state');
+    const citySelect = document.getElementById('city');
+    const selectedState = stateSelect.value;
+
+    citySelect.innerHTML = '<option value="">All Cities</option>';
+
+    if (selectedState && citiesByState[selectedState]) {
+        citiesByState[selectedState].forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            if (city === '{{ selected_city }}') {
+                option.selected = true;
+            }
+            citySelect.appendChild(option);
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadCities);
+</script>
+{% endblock %}
+{% endblock %}

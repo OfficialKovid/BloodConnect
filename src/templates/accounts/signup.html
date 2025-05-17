@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - BloodConnect</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box signup-box">
+            <div class="auth-header">
+                <div class="logo-wrapper">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2069/2069743.png" alt="BloodConnect" class="auth-logo">
+                </div>
+                <h2>Create Account</h2>
+                <p>Join our community and help save lives</p>
+            </div>
+
+            <form method="POST" class="auth-form signup-form">
+                {% csrf_token %}
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fas fa-info-circle"></i>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="form-grid">
+                    <div class="floating-input">
+                        <input type="text" id="first_name" name="first_name" placeholder=" " required>
+                        <label for="first_name">First Name</label>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="floating-input">
+                        <input type="text" id="last_name" name="last_name" placeholder=" " required>
+                        <label for="last_name">Last Name</label>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="floating-input">
+                    <input type="email" id="email" name="email" placeholder=" " required>
+                    <label for="email">Email Address</label>
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="form-grid">
+                    <div class="floating-input">
+                        <input type="tel" id="phone_primary" name="phone_primary" placeholder=" " required pattern="[0-9]{10}">
+                        <label for="phone_primary">Primary Phone</label>
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="floating-input">
+                        <input type="tel" id="phone_secondary" name="phone_secondary" placeholder=" " pattern="[0-9]{10}">
+                        <label for="phone_secondary">Secondary Phone</label>
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                </div>
+
+                <div class="floating-input select-input">
+                    <select id="blood_type" name="blood_type" required>
+                        <option value="" disabled selected></option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <label for="blood_type">Blood Type</label>
+                    <i class="fas fa-tint"></i>
+                </div>
+
+                <div class="floating-input">
+                    <input type="text" id="address" name="address" placeholder=" " required>
+                    <label for="address">Street Address</label>
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+
+                <div class="floating-input select-input">
+                    <select id="state" name="state" required onchange="loadCities(this.value)">
+                        <option value="" disabled selected></option>
+                    </select>
+                    <label for="state">State</label>
+                    <i class="fas fa-map"></i>
+                </div>
+
+                <div class="floating-input select-input">
+                    <select id="city" name="city" required disabled>
+                        <option value="" disabled selected></option>
+                    </select>
+                    <label for="city">City</label>
+                    <i class="fas fa-city"></i>
+                </div>
+
+                <div class="form-grid">
+                    <div class="floating-input">
+                        <input type="password" id="password1" name="password1" placeholder=" " required minlength="8">
+                        <label for="password1">Password</label>
+                        <i class="fas fa-lock"></i>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password1')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="floating-input">
+                        <input type="password" id="password2" name="password2" placeholder=" " required minlength="8">
+                        <label for="password2">Confirm Password</label>
+                        <i class="fas fa-lock"></i>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password2')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn primary-btn">
+                    <span>Create Account</span>
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'accounts:login' %}" class="login-link">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State and city data handling
+        const stateSelect = document.getElementById('state');
+        const citySelect = document.getElementById('city');
+        
+        const cityData = {
+            "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Kakinada", "Tirupati", "Rajahmundry", "Kadapa", "Anantapur"],
+            "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Pasighat", "Namsai", "Tezu", "Roing", "Ziro", "Bomdila", "Tawang", "Along"],
+            "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", "Tezpur", "Karimganj", "Sivasagar", "Goalpara"],
+            "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga", "Purnia", "Arrah", "Bihar Sharif", "Begusarai", "Katihar"],
+            "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Rajnandgaon", "Raigarh", "Durg", "Jagdalpur", "Ambikapur", "Chirimiri"],
+            "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda", "Bicholim", "Curchorem", "Cuncolim", "Canacona", "Pernem"],
+            "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Junagadh", "Anand", "Nadiad"],
+            "Haryana": ["Faridabad", "Gurgaon", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Sonipat", "Panchkula"],
+            "Himachal Pradesh": ["Shimla", "Dharamshala", "Mandi", "Solan", "Kullu", "Manali", "Palampur", "Baddi", "Nahan", "Una"],
+            "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Hazaribagh", "Deoghar", "Phusro", "Giridih", "Ramgarh", "Medininagar"],
+            "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum", "Gulbarga", "Davanagere", "Bellary", "Bijapur", "Shimoga"],
+            "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Palakkad", "Alappuzha", "Kannur", "Kottayam", "Malappuram"],
+            "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa"],
+            "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Amravati", "Navi Mumbai"],
+            "Manipur": ["Imphal", "Thoubal", "Bishnupur", "Churachandpur", "Kakching", "Ukhrul", "Chandel", "Senapati", "Tamenglong", "Jiribam"],
+            "Meghalaya": ["Shillong", "Tura", "Nongstoin", "Jowai", "Baghmara", "Resubelpara", "Williamnagar", "Nongpoh", "Cherrapunji", "Mairang"],
+            "Mizoram": ["Aizawl", "Lunglei", "Saiha", "Champhai", "Kolasib", "Serchhip", "Lawngtlai", "Mamit", "Khawzawl", "Hnahthial"],
+            "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha", "Zunheboto", "Mon", "Peren", "Phek", "Longleng"],
+            "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Puri", "Balasore", "Bhadrak", "Baripada", "Jharsuguda"],
+            "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Pathankot", "Hoshiarpur", "Batala", "Moga"],
+            "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner", "Ajmer", "Bhilwara", "Alwar", "Sikar", "Sri Ganganagar"],
+            "Sikkim": ["Gangtok", "Namchi", "Gyalshing", "Mangan", "Ravangla", "Singtam", "Rangpo", "Jorethang", "Nayabazar", "Yangyang"],
+            "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Trichy", "Salem", "Tirunelveli", "Vellore", "Erode", "Thoothukkudi", "Dindigul"],
+            "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Ramagundam", "Secunderabad", "Nalgonda", "Adilabad", "Suryapet"],
+            "Tripura": ["Agartala", "Udaipur", "Dharmanagar", "Pratapgarh", "Belonia", "Kailashahar", "Khowai", "Teliamura", "Mohanpur", "Melaghar"],
+            "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi", "Agra", "Meerut", "Prayagraj", "Ghaziabad", "Noida", "Aligarh", "Moradabad"],
+            "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Kathgodam", "Pithoragarh", "Ramnagar"],
+            "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Bardhaman", "Malda", "Baharampur", "Habra", "Kharagpur"]
+        };
+
+        // Initialize states
+        const states = Object.keys(cityData);
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+        });
+
+        // Load cities based on selected state
+        function loadCities(state) {
+            citySelect.innerHTML = '<option value="" disabled selected>Select City</option>';
+            citySelect.disabled = !state;
+            
+            if (state) {
+                cityData[state].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+
+        // Password visibility toggle
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = event.currentTarget.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Add animation class when select fields are changed
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value) {
+                    this.classList.add('has-value');
+                } else {
+                    this.classList.remove('has-value');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

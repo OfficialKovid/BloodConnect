@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - BloodConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .about-header h2 {
+        font-size: 2.5rem;
+        color: #d62828;
+        margin-bottom: 1rem;
+    }
+
+    .about-content {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .about-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .about-section h3 {
+        color: #d62828;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .about-section i {
+        font-size: 1.5rem;
+    }
+
+    .mission-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .mission-list li {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+        position: relative;
+    }
+
+    .mission-list li:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        background: #d62828;
+        border-radius: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <h2>About BloodConnect</h2>
+        <p>Connecting donors with those in need</p>
+    </div>
+
+    <div class="about-content">
+        <div class="about-section">
+            <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+            <ul class="mission-list">
+                <li>Connect blood donors with patients in need</li>
+                <li>Ensure safe and timely blood donation process</li>
+                <li>Create awareness about blood donation</li>
+                <li>Build a community of regular donors</li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h3><i class="fas fa-heart"></i> Why Choose Us</h3>
+            <p>We are dedicated to making blood donation accessible, efficient, and safe. Our platform connects donors directly with those in need, ensuring quick response times and reliable service.</p>
+        </div>
+
+        <div class="about-section">
+            <h3><i class="fas fa-users"></i> Our Impact</h3>
+            <p>Since our inception, we have:</p>
+            <ul>
+                <li>Facilitated thousands of successful donations</li>
+                <li>Built a network of dedicated donors</li>
+                <li>Served multiple hospitals and healthcare facilities</li>
+                <li>Organized regular blood donation camps</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

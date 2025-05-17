@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Request Submitted Successfully{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .reference-number {
+        font-size: 2rem;
+        color: #c2185b;
+        font-weight: bold;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 2px dashed #c2185b;
+    }
+
+    .info-text {
+        color: #dc3545;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+
+    .details {
+        margin: 1.5rem 0;
+        text-align: left;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .details p {
+        margin: 0.5rem 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #c2185b;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f8f9fa;
+        color: #c2185b;
+        border: 2px solid #c2185b;
+    }
+
+    .btn-light {
+        background: #ffffff;
+        color: #333;
+        border: 2px solid #c2185b;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <h1>Request Submitted Successfully!</h1>
+    
+    <p>Your blood request has been successfully registered. Here's your reference number:</p>
+    
+    <div class="reference-number">
+        {{ reference_number }}
+    </div>
+    
+    <p class="info-text">⚠️ IMPORTANT: Please save or take a screenshot of this reference number!</p>
+    
+    <div class="details">
+        <h3>Request Details:</h3>
+        <p><strong>Patient Name:</strong> {{ patient_name }}</p>
+        <p><strong>Blood Group Required:</strong> {{ blood_group }}</p>
+        <p><strong>Required Date:</strong> {{ required_date }}</p>
+    </div>
+    
+    <p>We will process your request and notify potential donors in your area.</p>
+    
+    <div class="action-buttons">
+        <a href="{% url 'donors:list_donors' %}?blood_group={{ blood_group }}" class="btn btn-primary">
+            <i class="fas fa-search"></i> Find Donors
+        </a>
+        <a href="{% url 'donors:list_requests' %}?blood_group={{ blood_group }}" class="btn btn-secondary">
+            <i class="fas fa-list"></i> View All Requests
+        </a>
+        <a href="{% url 'home:home' %}" class="btn btn-light">
+            <i class="fas fa-home"></i> Return Home
+        </a>
+    </div>
+
+    <p style="margin-top: 2rem; color: #666;">
+        You can find donors matching your blood group and location requirements by clicking the button above.
+    </p>
+</div>
+{% endblock %}

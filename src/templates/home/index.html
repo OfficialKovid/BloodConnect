@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home - BloodConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                    url("{% static 'images/blood.jpg'%}") no-repeat center/cover;
+        color: white;
+        padding: 2rem;
+    }
+
+    .hero h2 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        animation: fadeIn 1s ease-out 0.3s forwards;
+        opacity: 0;
+    }
+
+    .hero .btn {
+        padding: 1rem 2rem;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero .btn-primary {
+        background: #c2185b;
+        color: white;
+    }
+
+    .hero .btn-secondary {
+        background: white;
+        color: #c2185b;
+        border: 2px solid #c2185b;
+    }
+
+    .hero .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .hero .btn-primary:hover {
+        background: #a01449;
+    }
+
+    .hero .btn-secondary:hover {
+        background: #fff5f8;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Give the Gift of Life</h2>
+    <p>Your blood donation can save up to three lives. Join our community today.</p>
+    <div class="hero-buttons">
+        <a href="{% url 'accounts:signup' %}" class="btn btn-primary">
+            <i class="fas fa-heart"></i> Become a Donor
+        </a>
+        <a href="{% url 'donors:list_donors' %}" class="btn btn-secondary">
+            <i class="fas fa-search"></i> Find a Donor
+        </a>
+    </div>
+</section>
+{% endblock %}
